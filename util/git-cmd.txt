@@ -1,0 +1,35 @@
+    1  git init
+    2  git status
+    3  git add.
+    4  git status
+    5  git status
+    6  git add.
+    7  git add .
+    8  git status
+    9  git commit -am "first_commit"
+   10  git status
+   11  git remote add origin https://github.com/fbizandry/htc-fbi.git
+   12  git push -u origin master
+   13  git push -u origin master
+   14  git push origin --delete main
+   15  git push
+   16  git status
+   17  git push
+   18  git status
+   19  git add .
+   20  git commit _am "compte rendu"
+   21  git push
+   22  git status
+   23  git add .
+   24  git commit -am "Compte rendu"
+   25  git push
+   26  git clone https://github.com/fbizandry/htc-fbi.git
+   27  git status
+   28  git status
+   29  git status
+   30  git add .
+   31  git status
+   32  git commit -am "test home to htc"
+   33  git status
+   34  history
+   35  history > git-cmd.txt

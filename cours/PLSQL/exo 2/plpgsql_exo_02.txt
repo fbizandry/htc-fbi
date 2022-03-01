@@ -1,0 +1,114 @@
+/*Question 1*/
+
+CREATE or replace FUNCTION fbi_calcul_tva (montant float) RETURNS float AS $$
+DECLARE
+tva float;
+indice_tva float := 0.196;
+begin
+tva = montant * indice_tva ;
+return tva;
+END
+ $$ language plpgsql;
+ 
+---select fbi_calcul_tva (pro_prix) from produit
+ 
+
+/*Question 2*/
+
+create or replace function find_month_comm () returns table (
+		ncmd character varying (6),
+		cmd_date date,
+		month_cmd double precision
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		select  c.ncmd,  c.cmd_date, extract (month from c.cmd_date) as month_cmd
+ from commande c
+where extract (month from c.cmd_date) = extract (month from current_date);
+end $$ ;
+
+---select * from find_month_comm ()
+
+
+/*Question 3*/
+
+create or replace function find_month_comm2 (mois integer) returns table (
+		ncmd character varying (6),
+		cmd_date date,
+		month_cmd double precision
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		select  c.ncmd,  c.cmd_date, extract (month from c.cmd_date) as month_cmd
+ from commande c
+where extract (month from c.cmd_date) = mois;
+end $$ ;
+
+---select * from find_month_comm (3)
+
+
+/*Question 4*/
+
+create or replace function find_ville (nom_ville character varying(25)) returns text
+	language plpgsql
+as $$
+declare 
+nom_ville2 text;																   
+begin
+		select vil_nom into nom_ville2 
+		from ville 
+		 where vil_nom = nom_ville;
+		
+		IF NOT FOUND THEN 
+		raise notice 'la ville % nexiste pas dans la table',nom_ville;
+		else
+		raise notice 'la ville % existe dans la table',nom_ville;														   
+		end if;
+		return nom_ville2;														   
+
+end $$;
+
+---select find_ville('paris')
+
+
+/*Question 5*/
+
+create or replace function find_qest5 (date_voulue date) returns table (
+		rep_nom character varying(6), 
+		somme bigint
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		SELECT rep.rep_nom, count(cmd.ncmd) as somme
+FROM representant as rep
+inner join origine as ori on rep.nrep=ori.nrep
+inner join commande as cmd on ori.ncmd=cmd.ncmd
+WHERE cmd_date between date_voulue  - integer '20' and  date_voulue 
+and EXTRACT(DOW FROM cmd_date) not in (6,7)
+GROUP BY rep.rep_nom;
+
+end $$ ;
+
+---select * from find_qest5 ('2006-04-11')
+
+
+/*variante avec current_date*/
+create or replace function find_q5 () returns table (
+		cmd_date date
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		select c.cmd_date from commande c
+where c.cmd_date between current_date - 24 and current_date;
+
+end $$ ;
+
+---select * from find_q5 ()

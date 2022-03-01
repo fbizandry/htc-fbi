@@ -1,0 +1,93 @@
+/*bloc anonyme dans un prog plpgsql*/
+
+do language plpgsql $$
+declare
+
+begin
+
+
+end
+$$;
+
+/*exemple RAISE NOTICE*/
+do language plpgsql $$
+declare
+valeur integer := 10;
+begin
+raise notice 'bonjour %',valeur;
+
+end
+$$;
+
+
+/*exemple RAISE NOTICE1*/
+do language plpgsql $$
+declare
+valeur1 integer := 10;
+valeur2 integer := 20;
+begin
+raise notice 'bonjour % %',valeur1,valeur2;
+
+
+/*exemple RAISE NOTICE2*/
+do language plpgsql $$
+declare
+
+begin
+raise notice '% %', current_user, current_timestamp;
+
+end
+$$;
+
+
+/*exemple RAISE NOTICE fonction*/
+do language plpgsql $$
+begin
+raise notice 'somme %',fbi_addition(1,2);
+end
+$$;
+
+/*exemple d'une exception*/
+do language plpgsql $$
+declare 
+resultat real;
+begin
+resultat=1/0;
+raise notice 'ok';
+exception
+when division_by_zero then
+raise exception 'ko';
+end $$;
+
+
+/*Curseur*/
+do language plpgsql $$
+declare
+curs refcursor;
+cur cursor for select * from produit;
+begin
+for rec in cur loop
+raise notice 'prpduit: % %',rec.pro_libelle, rec.nprod;
+end loop;
+end
+$$;
+
+/*curseur fetch*/
+declare
+cur cursor for select * from produit;
+rec record;
+begin
+open cur;
+fetch from cur into rec;
+loop
+exit when rec is null;
+raise notice '%', rec.pro_libelle;
+
+
+
+/*exo2 q2 memo extract et current_date*/
+
+select  extract (month from cmd_date) as month_cmd, cmd_date
+ from commande
+where extract (month from cmd_date) = extract (month from current_date)
+

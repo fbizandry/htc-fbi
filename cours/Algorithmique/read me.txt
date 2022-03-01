@@ -1,0 +1,36 @@
+1) Les structures de données nécessaires
+
+Struct Sale {
+	month: entier
+	year: entier
+	saler: entier
+	price: reel
+	qte: entier
+}
+
+Struct Product {
+	label: chaine
+	cost: reel
+}
+
+Struct Bonus {
+	type: entier [0..12]
+	owner: chaine
+	amount: reel
+	year: entier
+}
+
+
+2) fonction qui permet d'enregistrer, à chaque vente, la vente au nom du commercial.
+
+Fonction saveSale (ihm: IHM)
+	var sale : Sale
+	
+	debut
+		sale.month = GetCurrentDate().getMonth()
+		sale.year = GetCurrentDate().getYear()
+		sale.saler = GetCurrentUser()
+		sale.product = ihm.GetProduct()
+		sale.price = ihm.GetPrice()
+		sale.qte = ihm.GetQte()
+		saveSaleToBD(sale)

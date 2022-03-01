@@ -1,0 +1,150 @@
+1) Les structures de données nécessaires
+
+Struct Sale {
+	month: entier
+	year: entier
+	saler: entier
+	price: reel
+	qte: entier
+}
+
+Struct Product {
+	label: chaine
+	cost: reel
+}
+
+Struct Bonus {
+	type: entier [0..12]
+	owner: chaine
+	amount: reel
+	year: entier
+}
+
+
+2) fonction qui permet d'enregistrer, à chaque vente, la vente au nom du commercial.
+
+Fonction saveSale (ihm: IHM)
+	var sale : Sale
+	
+	debut
+		sale.month = GetCurrentDate().getMonth()
+		sale.year = GetCurrentDate().getYear()
+		sale.saler = GetCurrentUser()
+		sale.product = ihm.GetProduct()
+		sale.price = ihm.GetPrice()
+		sale.qte = ihm.GetQte()
+		saveSaleToBD(sale)
+	fin
+
+3) fonction qui permet de calculer la marge de chaque vente
+
+Fonction CalculateMarginBySale (sale: Sale): reel
+var: margin, cost, ca, tcost: reels
+	
+Debut
+	cost = GetCostByProduct (sale.product)
+	ca = sale.price * sale.qty
+	tcost = cost * sale.qty
+	margin = ca - tcost
+	return margin
+fin
+	
+
+4) fonction qui permet de calculer la prime la prime mensuelle pour un commercial
+
+Struct Period {
+        month : Entier
+        year  : Entier
+}
+
+fonction getPeriod () : Period
+VAR : currentMonth, currentYear : Entier
+        period : Period
+
+Debut
+   currentMonth = getCurrentDate().getMonth()
+   currentYear = getCurrentDate().getYear()
+   Si (currentMonth = 1) alors 
+                period.month = 12
+                period.year = currentYear - 1
+   SINON
+                period.month = currentMonth -1;
+                period.year = currentYear
+   FINSINON
+   return period
+FIN
+
+
+5) fonction qui calcule le ca annuel par commercial
+
+Fonction calcYearlyCABySaler(saler : chaine)
+var : year, i : entier
+	sales : Sale [100] 
+	ca = 0.0 : reel
+	s : sale
+	
+debut
+	year = getCurrentDate().getCurrentYear()
+	sales = getSalesBySalerAnd Yaer (saler, year)
+	POUR i allant de 0 à 99 Faire
+			s = sales [i]
+			ca = ca + (s.price * s.qty)
+	FINPOUR
+	return ca
+fin
+
+
+6) fonction qui permet de calculer la prime annuelle pour chaque comercial
+
+Fonction calcYearlyBonusBySaler (saler : chaine): Bonus
+var: ca, taux : reel
+	b: Bonus
+	
+debut
+	ca = calcYearlyCABySaler(saler)
+	Si (ca >= 500000) Alors
+			taux = 0.02
+	FSI
+	b.type = 0
+	b.amount = ca * taux
+	b.year = getCurrentDate().getYear - 1
+	b.owner = saler
+	return
+Fin 
+
+
+7) Algo qui doit être exécuté en batch qui calcule la prime de tous les commerciaux chaque 1er du mois
+
+var: Salers : chaine [30]
+	i : entier
+	saler : chaine
+	
+debut
+	print("calcul de prime en cours...")
+	Salers = getDistinctSalers()
+	POUR i allant de 0 à 29 Faire
+			Saler = salers [i]
+			print ("Calcul de prime pour" + saler + "en cours")
+			b = calcMonthlyBonusBySaler(Saler)
+			SaveMonthlyBonusBySaler(b)
+	FINPOUR
+	print ("Calcul de prime mensuelle terminée")
+fin
+
+8) Algo qui doit être exécuté en batch qui calcule la prime de tous les commerciaux chaque début d'année
+
+var: Salers : chaine [30]
+	i : entier
+	saler : chaine
+	
+debut
+	print("calcul de prime en cours...")
+	Salers = getDistinctSalers()
+	POUR i allant de 0 à 29 Faire
+			Saler = salers [i]
+			print ("Calcul de prime pour" + saler + "en cours")
+			b = calcYearlyBonusBySaler(Saler) // la seule différence avec l'algo précedent puisque (b) calcule aussi la prime annuelle lorsque type=0.
+			SaveMonthlyBonusBySaler(b)
+	FINPOUR
+	print ("Calcul de prime mensuelle terminée")
+fin

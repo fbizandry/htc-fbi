@@ -1,0 +1,107 @@
+drop table if exists date_evenement_detail;
+
+CREATE TABLE date_evenement_detail (
+	id_event SERIAL REFERENCES evenement (id_event),
+	heure_24 time,
+	heure numeric,
+	minute_ev numeric,
+	seconde numeric,
+	jour_libelle character varying,
+	jour numeric,
+	mois numeric,
+	annee numeric,
+	n_semaine numeric,
+	n_trimestre numeric,
+	n_semestre numeric
+    );
+	
+/*création de la fonction*/	
+CREATE TABLE fbi_evenement (id_event SERIAL primary key, 
+						type_event character varying, 
+						date_event timestamp with time zone)
+
+drop table if exists fbi_date_evenement_detail;
+
+CREATE TABLE fbi_date_evenement_detail (
+	fk_id_event integer REFERENCES fbi_evenement (id_event),
+	heure_24 time,
+	heure numeric,
+	minute_ev numeric,
+	seconde numeric,
+	jour_libelle character varying,
+	jour numeric,
+	mois numeric,
+	annee numeric,
+	n_semaine numeric,
+	n_trimestre numeric
+    );
+	
+/*création de la fonction*/	
+create or replace function remplissage_tab()
+   returns trigger language plpgsql
+  as
+$$
+DECLARE
+event_d_date timestamp;
+v_id_ev integer;
+v_id_event integer;
+	v_heure_24 time;
+	v_heure numeric;
+	v_minute_ev numeric;
+	v_seconde numeric;
+	v_jour_libelle character varying;
+	v_jour numeric;
+	v_mois numeric;
+	v_annee numeric;
+	v_n_semaine numeric;
+	v_n_trimestre numeric;
+	v_n_semestre numeric;
+BEGIN
+
+select into event_d_date new.date_event from fbi_evenement;
+select into v_id_ev new.id_event from fbi_evenement;
+select into v_heure_24 cast(event_d_date as time);
+select into v_heure extract ('hour' from event_d_date);
+select into v_minute_ev extract ('minute' from event_d_date);
+select into v_seconde extract ('second' from event_d_date);
+select into v_jour_libelle To_Char(event_d_date, 'Day');
+select into v_jour extract ('day' from event_d_date);
+select into v_mois extract ('month' from event_d_date);
+select into v_annee extract ('year' from event_d_date);
+select into v_n_semaine DATE_PART('week',event_d_date);
+select into v_n_trimestre EXTRACT(QUARTER FROM event_d_date);
+
+
+insert into fbi_date_evenement_detail (fk_id_event ,
+	heure_24,
+	heure,
+	minute_ev,
+	seconde,
+	jour_libelle,
+	jour,
+	mois,
+	annee,
+	n_semaine,
+	n_trimestre) values (v_id_event,
+	v_heure_24,
+	v_heure,
+	v_minute_ev,
+	v_seconde,
+	v_jour_libelle,
+	v_jour,
+	v_mois,
+	v_annee,
+	v_n_semaine,
+	v_n_trimestre);
+
+
+return null;
+end;
+$$
+
+CREATE TRIGGER trig_remplissage AFTER INSERT ON fbi_evenement
+    FOR EACH ROW EXECUTE procedure remplissage_tab();
+
+insert into fbi_evenement (id_event, type_event,date_event) values(6,'CONCERT','2019-06-17 03:10:25-07');
+select * from fbi_date_evenement_detail
+select * from fbi_evenement

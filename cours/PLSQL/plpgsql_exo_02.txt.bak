@@ -1,0 +1,100 @@
+/*Question 1*/
+
+CREATE or replace FUNCTION fbi_calcul_tva (montant float) RETURNS float AS $$
+DECLARE
+tva float;
+indice_tva float := 0.196;
+begin
+tva = montant * indice_tva ;
+return tva;
+END
+ $$ language plpgsql;
+ 
+/*pour appeler la function dans une table */
+ select fbi_calcul_tva (pro_prix) from produit
+ 
+
+/*Question 2*/
+
+create or replace function find_month_comm () returns table (
+		ncmd character varying (6),
+		cmd_date date,
+		month_cmd double precision
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		select  c.ncmd,  c.cmd_date, extract (month from c.cmd_date) as month_cmd
+ from commande c
+where extract (month from c.cmd_date) = extract (month from current_date);
+end $$ ;
+
+/*pour appeler la function*/
+select * from find_month_comm ()
+
+
+/*Question 3*/
+
+create or replace function find_month_comm2 (mois integer) returns table (
+		ncmd character varying (6),
+		cmd_date date,
+		month_cmd double precision
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		select  c.ncmd,  c.cmd_date, extract (month from c.cmd_date) as month_cmd
+ from commande c
+where extract (month from c.cmd_date) = mois;
+end $$ ;
+
+/*pour appeler la function*/
+select * from find_month_comm (3)
+
+
+/*Question 4*/
+
+create or replace function find_ville (nom_ville character varying(25)) returns text
+	language plpgsql
+as $$
+declare 
+nom_ville2 text;																   
+begin
+		select vil_nom into nom_ville2 
+		from ville 
+		 where vil_nom = nom_ville;
+		
+		IF NOT FOUND THEN 
+		raise notice 'la ville % nexiste pas dans la table',nom_ville;
+		else
+		raise notice 'la ville % existe dans la table',nom_ville;														   
+		end if;
+		return nom_ville2;														   
+
+end $$;
+
+/*pour appeler la function*/
+select find_ville('paris')
+
+
+/*Question 5*/
+
+create or replace function find_q5 () returns table (
+		day_cmd double precision,
+		month_cmd double precision,
+		year_cmd double precision
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		select cmd_date,
+		extract (day from c.cmd_date) as day_cmd, 
+		extract (month from c.cmd_date) as month_cmd, 
+		extract (year from c.cmd_date) as year_cmd
+ from commande c
+where extract (month from c.cmd_date) = extract (month from current_date);
+end $$ ;
+
