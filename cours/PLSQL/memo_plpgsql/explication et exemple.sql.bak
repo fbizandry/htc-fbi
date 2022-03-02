@@ -157,17 +157,3 @@ select  extract (month from cmd_date) as month_cmd, cmd_date
  from commande
 where extract (month from cmd_date) = extract (month from current_date)
 
-
-/* indentifiant pk auto increment*/
-
-CREATE TABLE evenement (
-		id_event SERIAL primary key, 
-		type_event character varying, 
-		date_event timestamp 
-		);
-
-CREATE TABLE commandes (
-        id_commande integer PRIMARY KEY,
-        no_produit integer REFERENCES produits (no_produit),
-        quantite integer
-    );
