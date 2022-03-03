@@ -4,7 +4,7 @@ public class HelloWorld {
 	public static void main(String[] args) {
 		System.out.println("Application Addition ...");
 
-		if (args.length != 3) {
+		if (args.length != 5) {
 			System.out.println("Missing arguments...quit");
 			return;
 		}
@@ -14,5 +14,11 @@ public class HelloWorld {
 		int n3 = Integer.parseInt(args[2]);
 		int somme = n1 + n2 + n3;
 		System.out.println("La somme de (" + n1 + " ," + n2 + " ," + n3 + ") est : " + somme);
+
+		Person p = new Person(Integer.parseInt(args[3]), args[4]);
+
+		
+		System.out.println("Voici la personne saisie : " + p);
+
 	}
 }
