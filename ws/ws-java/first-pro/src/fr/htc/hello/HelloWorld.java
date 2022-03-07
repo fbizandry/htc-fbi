@@ -1,7 +1,6 @@
 package fr.htc.hello;
 
 public class HelloWorld {
-	const int i = 5;
 	public static void main(String[] args) {
 		System.out.println("Application Addition ...");
 		if (args.length != 5) {
