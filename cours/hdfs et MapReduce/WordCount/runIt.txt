@@ -1,0 +1,2 @@
+hadoop jar WordCount-0.0.1-SNAPSHOT.jar fr.htc.hadoop.WordCount /user/raj_ops/fbi/mapred/in/ /user/raj_ops/fbi/mapred/out/r1
+hadoop jar sales-kpi2-0.0.1-SNAPSHOT.jar fr.htc.kpi2.JobLauncher /user/raj_ops/fbi/mapred/sales_in/ /user/raj_ops/fbi/mapred/sales_out/r9
