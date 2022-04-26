@@ -5,10 +5,11 @@ CREATE EXTERNAL TABLE IF NOT EXISTS sales_part (  product_id String,  time_id St
 INSERT INTO sales_part( select  product_id ,  time_id ,  customer_id ,  promotion_id,  store_sales ,  store_cost ,  unit_sales ,  store_id from sales );
 
 
-create external table if not exists test ( name string, friends array<string>) row format delimited fields terminated by '|' STORED AS TEXTFILE  LOCATION '/user/raj_ops/fbi/hive1/sales1.raw' ;
+create external table if not exists test ( name string, friends array<string>) row format delimited fields terminated by '|' collection ITEMS terminated by ',' STORED AS TEXTFILE  LOCATION '/user/raj_ops/fbi/hive1/sales1.raw' ;
 
+CREATE EXTERNAL TABLE IF NOT EXISTS stores_raw ( store_id String, store_type String, region_id String, store_name String, store_number String, store_street_address String, store_city String, store_state String, store_postal_code String, store_country String, store_manager String, store_phone String, store_fax String, first_opened_date String, last_remodel_date String, store_sqft String, grocery_sqft String, frozen_sqft String, meat_sqft String, coffee_bar String, video_store String, salad_bar String, prepared_food String, florist String)   ROW FORMAT DELIMITED  FIELDS TERMINATED BY ';'  LINES TERMINATED BY '\n'  STORED AS TEXTFILE  LOCATION '/user/raj_ops/fbi/hive1/sales1.raw'
 
-WITH v_test_array AS (SELECT split(friends, "-") AS friiends      FROM test) SELECT friiends[0]   FROM v_test_array;
+select store_name, sum (cast(sales.store_sales as float) * cast(sales.unit_sales as float)) from sales join stores_raw on (sales.store_id = stores_raw.store_id) group by (store_name); 
 
 
 
