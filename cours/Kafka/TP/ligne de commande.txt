@@ -1,0 +1,35 @@
+=========================================== KAFKA Start================================
+-- kafka location 
+/usr/hdp/current/kafka-broker/bin
+
+_____________________________  KAFKA BEGING _____________________________
+
+-- list topics
+./kafka-topics.sh --list --zookeeper sandbox-hdp.hortonworks.com:2181
+
+--Create topic
+./kafka-topics.sh --create --topic test-dmo --zookeeper localhost:2181 --partitions 2 --replication-factor 1
+
+--Describe topic
+./kafka-topics.sh --describe --zookeeper localhost:2181
+
+--Producer
+./kafka-console-producer.sh --broker-list sandbox-hdp.hortonworks.com:6667 --topic test-dmo
+
+-- Consumer
+./kafka-console-consumer.sh --topic test-dmo --bootstrap-server sandbox-hdp.hortonworks.com:6667 --from-beginning
+
+--zookeeper Location
+/usr/hdp/current/zookeeper-client/bin
+
+--zkClient
+https://stackoverflow.com/questions/40146921/how-to-list-all-available-kafka-brokers-in-a-cluster
+./zkCli.sh
+ ==> ls /brokers/ids/1001  | topics
+==> get /brokers/topics/test .....
+
+--Start broker
+ bin/kafka-server-start.sh config/server.properties
+
+--stop  broker
+./kafka-server-stop.sh ../config/server-1.properties

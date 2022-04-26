@@ -1,0 +1,14 @@
+CREATE [TEMPORARY] [EXTERNAL] TABLE [IF NOT EXISTS] [db_name.] table_name
+
+[(col_name data_type [COMMENT col_comment], ...)]
+[COMMENT table_comment]
+[ROW FORMAT row_format]
+[STORED AS file_format]
+
+CREATE EXTERNAL TABLE EMP_PART (eid int, name string, position string) 
+  PARTITIONED BY (dept string);
+  
+hive> create table emp_bucket(Id int, Name string , Salary float)    
+clustered by (Id) into 3 buckets  
+row format delimited    
+fields terminated by ',' ;
